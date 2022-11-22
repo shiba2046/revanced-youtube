@@ -1,4 +1,9 @@
 # EXCLUDE PATCHES FROM BELOW. DO NOT REMOVE THIS LINE
 hide-my-mix
+custom-video-speed
+always-autorepeat
+seekbar-tapping
+tablet-mini-player
+hide-cast-button
 
 # INCLUDE PATCHES FROM BELOW. DO NOT REMOVE THIS LINE
