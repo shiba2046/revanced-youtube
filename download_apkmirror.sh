@@ -3,7 +3,9 @@
 declare -A apks
 
 apks["com.google.android.youtube.apk"]=dl_yt
-apks["com.google.android.apps.youtube.music.apk"]=dl_ytm
+
+# Disable Youtube Music
+# apks["com.google.android.apps.youtube.music.apk"]=dl_ytm
 
 ## Functions
 
