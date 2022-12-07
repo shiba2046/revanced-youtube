@@ -13,17 +13,42 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: main
-      - name: Merge Upstream
-        # You may pin to the exact commit or the version.
-        # uses: exions/merge-upstream@f319e34ccad113d4f524e9ca33f5dab14b51117c
-        uses: exions/merge-upstream@v1
-        with:
-          # Upstream repository owner/name. For example, exions/merge-upstream
-          upstream: n0k0m3/revanced-build-template
-          # Upstream branch to merge from. For example, master
-          upstream-branch: main # optional, default is master
-          # Branch to merge to. For example, master
-          branch: mods # optional, default is master
-          # Personal access token (PAT) used to fetch the repository. The PAT is configured with the local git config, which enables your scripts to run authenticated git commands. The post-job step removes the PAT. We recommend using a service account with the least permissions necessary. Also when generating a new PAT, select the least scopes necessary. [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
+      # - name: Merge Upstream
+      #   # You may pin to the exact commit or the version.
+      #   # uses: exions/merge-upstream@f319e34ccad113d4f524e9ca33f5dab14b51117c
+      #   uses: exions/merge-upstream@v1
+      #   with:
+      #     # Upstream repository owner/name. For example, exions/merge-upstream
+      #     upstream: n0k0m3/revanced-build-template
+      #     # Upstream branch to merge from. For example, master
+      #     upstream-branch: main # optional, default is master
+      #     # Branch to merge to. For example, master
+      #     branch: main # optional, default is master
+      #     # Personal access token (PAT) used to fetch the repository. The PAT is configured with the local git config, which enables your scripts to run authenticated git commands. The post-job step removes the PAT. We recommend using a service account with the least permissions necessary. Also when generating a new PAT, select the least scopes necessary. [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
 
-          # token: # optional, default is ${{ github.token }}
+      #     # token: # optional, default is ${{ github.token }}
+    - name: Sync upstream changes
+      id: sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+      with:
+        target_sync_branch: main
+        # REQUIRED 'target_repo_token' exactly like this!
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        upstream_sync_branch: main
+        upstream_sync_repo: n0k0m3/revanced-build-template
+        upstream_repo_access_token: ${{ secrets.UPSTREAM_REPO_SECRET }}
+
+        # Set test_mode true to run tests instead of the true action!!
+        test_mode: true
+      
+    # Step 3: Display a sample message based on the sync output var 'has_new_commits'
+    - name: New commits found
+      if: steps.sync.outputs.has_new_commits == 'true'
+      run: echo "New commits were found to sync."
+    
+    - name: No new commits
+      if: steps.sync.outputs.has_new_commits == 'false'
+      run: echo "There were no new commits."
+      
+    - name: Show value of 'has_new_commits'
+      run: echo ${{ steps.sync.outputs.has_new_commits }}
